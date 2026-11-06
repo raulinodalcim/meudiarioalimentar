@@ -1,0 +1,1894 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#16845b">
+<title>Meu Diário Alimentar</title>
+
+<style>
+:root {
+    --green:#16845b;
+    --dark:#106b49;
+    --light:#e8f5ee;
+    --soft:#f2f8f4;
+    --bg:#f5f7f5;
+    --white:#fff;
+    --text:#26332c;
+    --muted:#819087;
+    --border:#e6ebe7;
+    --orange:#e89a42;
+    --red:#d95d5d;
+    --shadow:0 5px 22px rgba(34,64,46,.055);
+    --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg);color:var(--text);min-height:100vh;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.app-header{
+    background:#fff;border-bottom:1px solid var(--border);
+    padding:17px 5%;
+}
+.header-content{
+    max-width:1350px;margin:auto;display:flex;
+    align-items:center;justify-content:space-between;gap:15px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{
+    width:43px;height:43px;display:grid;place-items:center;
+    background:var(--light);border-radius:13px;font-size:23px;
+}
+.brand h1{font-size:19px;font-weight:750;letter-spacing:-.5px}
+.brand p{font-size:12px;color:var(--muted);margin-top:3px}
+.saved{
+    background:var(--soft);color:var(--dark);
+    padding:8px 13px;border-radius:30px;font-size:12px;font-weight:600;
+}
+.container{max-width:1350px;padding:30px 5% 50px;margin:auto}
+.page-heading{margin-bottom:24px}
+.page-heading h2{font-size:26px;letter-spacing:-.7px;margin-bottom:7px}
+.page-heading p{color:var(--muted);font-size:14px;line-height:1.6}
+.card{
+    background:#fff;border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+}
+.primary{
+    border:0;background:var(--green);color:white;padding:12px 18px;
+    border-radius:9px;font-weight:650;transition:.2s;
+}
+.primary:hover{background:var(--dark)}
+.secondary{
+    border:1px solid var(--border);background:#fff;color:var(--dark);
+    padding:11px 15px;border-radius:9px;font-size:12px;font-weight:700;
+}
+.secondary:hover{background:var(--soft)}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field label{font-size:13px;font-weight:650;color:#46544a}
+.field input,.field select,.field textarea{
+    width:100%;border:1px solid var(--border);border-radius:9px;
+    padding:11px 12px;color:var(--text);background:white;outline:none;
+}
+.field input,.field select{height:45px}
+.field textarea{min-height:75px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{
+    border-color:var(--green);box-shadow:0 0 0 3px rgba(22,132,91,.09);
+}
+.field small{font-size:11px;color:var(--muted);line-height:1.5}
+.form-grid{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;
+}
+.full{grid-column:1/-1}
+
+/* Cadastro e ficha inicial */
+.setup-card{max-width:850px;margin:25px auto;padding:30px}
+.setup-icon{
+    width:55px;height:55px;background:var(--light);
+    display:grid;place-items:center;border-radius:16px;font-size:26px;
+    margin-bottom:18px;
+}
+.setup-card h2{font-size:25px;margin-bottom:8px}
+.setup-intro{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:25px}
+.form-section{
+    border-top:1px solid var(--border);padding-top:22px;margin-top:23px;
+}
+.form-section h3{font-size:16px;margin-bottom:7px}
+.form-section>p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:17px}
+.setup-card .primary{width:100%;height:48px;margin-top:25px}
+.disclaimer{
+    background:#fff9ef;border:1px solid #f1e6d3;color:#796444;
+    padding:13px;border-radius:10px;font-size:11px;line-height:1.6;
+}
+.radio-line{display:flex;gap:10px;flex-wrap:wrap}
+.radio-option{
+    border:1px solid var(--border);border-radius:9px;padding:11px 13px;
+    display:flex;align-items:center;gap:8px;font-size:12px;
+    background:white;cursor:pointer;
+}
+.radio-option:has(input:checked){
+    border-color:var(--green);background:var(--soft);color:var(--dark);
+}
+.radio-option input{accent-color:var(--green)}
+
+/* Painel */
+.date-heading{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:15px;flex-wrap:wrap;margin-bottom:22px;
+}
+.date-heading h2{font-size:25px;letter-spacing:-.5px}
+.date-heading p{margin-top:5px;font-size:13px;color:var(--muted)}
+.date-picker{
+    padding:10px 12px;border:1px solid var(--border);
+    background:white;border-radius:9px;color:var(--text);
+}
+.stats-grid{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:15px;margin-bottom:23px;
+}
+.stat-card{padding:19px 20px}
+.stat-top{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:14px;gap:8px;
+}
+.stat-label{font-size:12px;color:var(--muted);font-weight:600}
+.stat-icon{
+    width:34px;height:34px;display:grid;place-items:center;
+    background:var(--soft);border-radius:10px;font-size:17px;
+}
+.stat-value{font-size:27px;font-weight:760;letter-spacing:-1px}
+.stat-unit{color:var(--muted);font-size:12px;margin-left:4px}
+.stat-description{color:var(--muted);font-size:11px;margin-top:6px;line-height:1.4}
+.progress-card{padding:21px 23px;margin-bottom:23px}
+.progress-heading{
+    display:flex;justify-content:space-between;gap:10px;
+    margin-bottom:15px;font-size:13px;
+}
+.progress-heading span{color:var(--green);font-weight:700}
+.progress-track,.breakdown-track{
+    height:9px;background:#edf1ed;border-radius:30px;overflow:hidden;
+}
+.progress-fill,.breakdown-fill{
+    height:100%;background:linear-gradient(90deg,#16845b,#43b77d);
+    border-radius:30px;transition:width .3s;
+}
+.progress-footer{
+    display:flex;justify-content:space-between;gap:10px;
+    margin-top:10px;color:var(--muted);font-size:11px;
+}
+.content-grid{
+    display:grid;grid-template-columns:minmax(0,1fr) 335px;
+    gap:22px;align-items:start;
+}
+.main-column,.side-column{
+    display:flex;flex-direction:column;gap:22px;min-width:0;
+}
+.section-card{padding:22px}
+.section-title{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:12px;margin-bottom:19px;
+}
+.section-title h3{font-size:16px;font-weight:750}
+.section-title p{color:var(--muted);font-size:11px;margin-top:5px;line-height:1.5}
+
+/* Calendário */
+.calendar-navigation{display:flex;align-items:center;gap:12px}
+.calendar-navigation strong{
+    text-transform:capitalize;font-size:13px;min-width:130px;text-align:center;
+}
+.calendar-navigation button{
+    width:31px;height:31px;border:1px solid var(--border);
+    background:white;border-radius:8px;font-size:17px;
+}
+.calendar-weekdays,.calendar-days{
+    display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;
+}
+.calendar-weekdays{margin-bottom:9px}
+.calendar-weekdays span{
+    text-align:center;font-size:11px;color:var(--muted);
+    font-weight:650;padding:6px 0;
+}
+.calendar-day{
+    min-width:0;min-height:65px;background:white;border:1px solid transparent;
+    border-radius:9px;display:flex;flex-direction:column;
+    align-items:center;padding:9px 2px 5px;color:var(--text);
+}
+.calendar-day:hover:not(.empty){background:var(--soft);border-color:#cce5d7}
+.calendar-day.selected{background:var(--light);border-color:var(--green)}
+.calendar-day.today:not(.selected){border-color:#a4c9b4}
+.calendar-day.empty{pointer-events:none}
+.day-number{font-size:13px;font-weight:700}
+.day-total{
+    color:var(--dark);font-size:9px;font-weight:700;
+    margin-top:7px;text-align:center;line-height:1.2;
+}
+.calendar-legend{display:flex;gap:15px;margin-top:15px;color:var(--muted);font-size:11px}
+.legend-dot{
+    display:inline-block;width:8px;height:8px;border-radius:50%;
+    margin-right:5px;background:var(--green);
+}
+
+/* Refeições */
+.meal-card{border:1px solid var(--border);border-radius:12px;margin-top:12px;overflow:hidden}
+.meal-header{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:12px;padding:15px 16px;background:#fcfdfc;
+}
+.meal-name{display:flex;align-items:center;gap:11px}
+.meal-icon{
+    width:37px;height:37px;display:grid;place-items:center;
+    background:var(--light);border-radius:10px;font-size:18px;
+}
+.meal-name strong{display:block;font-size:13px}
+.meal-name small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.meal-calories{font-size:12px;font-weight:750;color:var(--dark);white-space:nowrap}
+.meal-items{padding:0 16px}
+.meal-item{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:10px;border-top:1px solid #f0f2f0;padding:12px 0;
+}
+.item-info{min-width:0}
+.item-info strong{font-size:12px;display:block;overflow-wrap:anywhere}
+.item-info small{display:block;color:var(--muted);font-size:10px;margin-top:4px;line-height:1.5}
+.item-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.item-kcal{font-weight:700;font-size:12px;white-space:nowrap}
+.delete{
+    border:0;color:#a0aaa3;background:transparent;font-size:17px;padding:4px;
+}
+.delete:hover{color:var(--red)}
+.meal-empty{border-top:1px solid #f0f2f0;padding:13px 0;color:#a0aaa3;font-size:11px}
+.meal-footer{
+    background:#fcfdfc;border-top:1px solid #f0f2f0;
+    display:flex;justify-content:space-between;align-items:center;
+    gap:10px;padding:12px 16px;
+}
+.meal-footer span{font-size:11px;color:var(--muted)}
+.add-food{
+    border:0;background:var(--light);color:var(--dark);
+    padding:8px 12px;border-radius:8px;font-size:11px;font-weight:700;
+}
+
+/* Exercício */
+.exercise-box{
+    padding:17px;background:var(--soft);border:1px solid #dcebe1;
+    border-radius:12px;
+}
+.exercise-toggle{
+    display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;
+}
+.exercise-toggle input{width:18px;height:18px;accent-color:var(--green)}
+.exercise-details{margin-top:16px}
+.exercise-details .form-grid{gap:12px}
+.exercise-summary{
+    border-top:1px solid #dcebe1;margin-top:15px;padding-top:13px;
+    font-size:12px;color:var(--dark);line-height:1.6;
+}
+.exercise-box .primary{margin-top:15px;width:100%}
+
+/* Perfil e recomendações */
+.profile-info{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.profile-item small{color:var(--muted);font-size:11px;display:block;margin-bottom:5px}
+.profile-item strong{font-size:13px;overflow-wrap:anywhere}
+.metabolic-box{
+    background:var(--soft);border-radius:11px;padding:15px;margin-top:18px;
+}
+.metabolic-box small{font-size:11px;color:var(--muted)}
+.metabolic-box strong{
+    display:block;color:var(--dark);font-size:23px;margin:5px 0;
+}
+.metabolic-box p{color:var(--muted);font-size:10px;line-height:1.5}
+.details{
+    border-top:1px solid var(--border);margin-top:18px;padding-top:14px;
+}
+.details summary{cursor:pointer;color:var(--dark);font-size:12px;font-weight:700}
+.edit-form{margin-top:16px}
+.edit-form .form-grid{gap:12px}
+.edit-form .field input,.edit-form .field select{height:40px;font-size:12px}
+.edit-form .primary{width:100%;margin-top:14px}
+.breakdown-row{margin-top:17px}
+.breakdown-heading{
+    display:flex;justify-content:space-between;gap:8px;
+    font-size:11px;margin-bottom:7px;
+}
+.breakdown-heading span:last-child{color:var(--muted);font-weight:650}
+.breakdown-track{height:7px}
+.breakdown-empty{color:var(--muted);font-size:12px;line-height:1.5}
+
+/* Recomendações */
+.recommendation{
+    border:1px solid var(--border);border-radius:11px;padding:13px;
+    margin-top:11px;background:#fff;
+}
+.recommendation h4{font-size:12px;margin-bottom:7px;color:var(--dark)}
+.recommendation p,.recommendation li{
+    font-size:11px;line-height:1.6;color:#617067;
+}
+.recommendation ul{padding-left:17px;margin-top:6px}
+.recommendation-warning{
+    background:#fff9ef;border-color:#f1e6d3;
+}
+.recommendation-warning h4{color:#8a673b}
+.notice{
+    padding:15px;background:#fff9ef;border:1px solid #f5e9d5;
+    border-radius:11px;color:#796444;font-size:11px;line-height:1.6;
+}
+.notice strong{display:block;margin-bottom:5px;font-size:12px}
+
+/* Modal */
+.modal-overlay{
+    position:fixed;z-index:1000;inset:0;background:rgba(20,35,27,.48);
+    display:flex;justify-content:center;align-items:center;
+    padding:20px;overflow-y:auto;
+}
+.modal{
+    width:100%;max-width:510px;background:white;border-radius:17px;
+    padding:25px;box-shadow:0 18px 60px rgba(0,0,0,.16);margin:auto;
+}
+.modal-header{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:15px;margin-bottom:14px;
+}
+.modal-header h3{font-size:19px}
+.modal-close{
+    width:32px;height:32px;border:0;background:#f1f4f1;
+    border-radius:8px;font-size:19px;color:#66736a;
+}
+.modal-description{
+    color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:18px;
+}
+.modal-form{display:flex;flex-direction:column;gap:14px}
+.quantity-row{display:grid;grid-template-columns:minmax(0,1fr) 115px;gap:10px}
+.food-info{
+    background:var(--soft);border-radius:9px;padding:12px;
+    color:var(--dark);font-size:11px;line-height:1.6;
+}
+.check-line{
+    display:flex;align-items:flex-start;gap:9px;
+    font-size:11px;line-height:1.5;color:#56645b;
+}
+.check-line input{margin-top:2px;accent-color:var(--green)}
+.modal-disclaimer{
+    color:var(--muted);font-size:10px;line-height:1.5;margin-top:15px;
+}
+.footer{
+    border-top:1px solid var(--border);padding:23px 5%;
+    text-align:center;color:var(--muted);font-size:11px;
+}
+
+@media(max-width:980px){
+    .content-grid{grid-template-columns:1fr}
+    .side-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .side-column .notice{grid-column:1/-1}
+}
+@media(max-width:650px){
+    .app-header{padding:14px 4%}
+    .brand h1{font-size:16px}
+    .brand p{font-size:10px}
+    .saved{font-size:10px;padding:7px 9px}
+    .container{padding:23px 4% 35px}
+    .page-heading h2,.date-heading h2{font-size:22px}
+    .stats-grid{grid-template-columns:1fr 1fr;gap:9px}
+    .stat-card{padding:15px}
+    .stat-card:last-child{grid-column:1/-1}
+    .stat-value{font-size:23px}
+    .progress-card,.section-card{padding:17px 14px}
+    .side-column{display:flex}
+    .calendar-day{min-height:56px}
+    .day-total{font-size:8px;margin-top:6px}
+    .calendar-weekdays span{font-size:10px}
+    .calendar-navigation strong{min-width:105px;font-size:12px}
+    .meal-header,.meal-items,.meal-footer{padding-left:11px;padding-right:11px}
+    .item-right{gap:6px}
+    .setup-card{padding:22px 16px;margin:10px auto}
+    .form-grid{gap:13px 10px}
+    .modal{padding:20px 16px}
+}
+@media(max-width:390px){
+    .saved{font-size:0}
+    .form-grid{grid-template-columns:1fr}
+    .full{grid-column:auto}
+}
+</style>
+</head>
+
+<body>
+
+<header class="app-header">
+    <div class="header-content">
+        <div class="brand">
+            <div class="brand-icon">🥗</div>
+            <div>
+                <h1>Meu Diário Alimentar</h1>
+                <p>Sua alimentação, organizada diariamente.</p>
+            </div>
+        </div>
+        <div class="saved">● Salvo neste dispositivo</div>
+    </div>
+</header>
+
+<main class="container">
+
+<!-- FICHA INICIAL -->
+
+<section class="card setup-card" id="setupPanel" hidden>
+    <div class="setup-icon">🌱</div>
+    <h2>Vamos conhecer sua rotina?</h2>
+    <p class="setup-intro">
+        Antes de começar, preencha sua ficha inicial. As respostas ajudam
+        a organizar seu acompanhamento e apresentar sugestões gerais de
+        alimentação. Não se trata de diagnóstico médico.
+    </p>
+
+    <form id="setupForm">
+
+        <div class="form-section" style="border-top:0;padding-top:0;margin-top:0">
+            <h3>01. Dados físicos</h3>
+            <p>Essas informações são utilizadas para estimar seu metabolismo basal e gasto energético diário.</p>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="age">Idade (anos)</label>
+                    <input id="age" name="age" type="number" min="1" max="120" required placeholder="Ex.: 25">
+                </div>
+                <div class="field">
+                    <label for="sex">Sexo biológico</label>
+                    <select id="sex" name="sex" required>
+                        <option value="">Selecione</option>
+                        <option value="male">Masculino</option>
+                        <option value="female">Feminino</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="weight">Peso atual (kg)</label>
+                    <input id="weight" name="weight" type="number" min="20" max="400" step=".1" required placeholder="Ex.: 75">
+                </div>
+                <div class="field">
+                    <label for="height">Altura (cm)</label>
+                    <input id="height" name="height" type="number" min="80" max="250" required placeholder="Ex.: 175">
+                </div>
+                <div class="field full">
+                    <label for="activity">Nível habitual de atividade física</label>
+                    <select id="activity" name="activity" required>
+                        <option value="">Selecione</option>
+                        <option value="1.2">Sedentário — pouco ou nenhum exercício</option>
+                        <option value="1.375">Pouco ativo — exercícios leves de 1 a 3 dias/semana</option>
+                        <option value="1.55">Moderadamente ativo — exercícios de 3 a 5 dias/semana</option>
+                        <option value="1.725">Muito ativo — exercícios intensos de 6 a 7 dias/semana</option>
+                        <option value="1.9">Extremamente ativo — atividade muito intensa</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>02. Seu objetivo</h3>
+            <p>Qual é sua principal intenção ao acompanhar a alimentação?</p>
+            <div class="field">
+                <label for="goal">Objetivo principal</label>
+                <select id="goal" name="goal" required>
+                    <option value="">Selecione</option>
+                    <option value="habits">Melhorar meus hábitos alimentares</option>
+                    <option value="maintain">Manter meu peso atual</option>
+                    <option value="reduce">Reduzir peso corporal</option>
+                    <option value="gain">Aumentar peso ou massa muscular</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>03. Sua alimentação</h3>
+            <p>Conte um pouco sobre seu padrão alimentar e suas necessidades.</p>
+
+            <div class="form-grid">
+                <div class="field full">
+                    <label for="dietPattern">Qual padrão alimentar mais representa sua rotina?</label>
+                    <select id="dietPattern" name="dietPattern" required>
+                        <option value="">Selecione</option>
+                        <option value="omnivore">Onívoro — consumo alimentos de origem animal e vegetal</option>
+                        <option value="vegetarian">Vegetariano</option>
+                        <option value="vegan">Vegano</option>
+                        <option value="pescatarian">Pescetariano — inclui peixes</option>
+                        <option value="other">Outro ou não sigo um padrão específico</option>
+                    </select>
+                </div>
+
+                <div class="field full">
+                    <label for="restrictions">Alergias, intolerâncias e restrições alimentares</label>
+                    <textarea id="restrictions" name="restrictions" maxlength="600" placeholder="Ex.: intolerância à lactose, alergia a amendoim, não consumo carne..."></textarea>
+                    <small>Informe também alimentos que precisa evitar.</small>
+                </div>
+
+                <div class="field full">
+                    <label for="conditions">Condições de saúde ou necessidades que considera importantes (opcional)</label>
+                    <textarea id="conditions" name="conditions" maxlength="600" placeholder="Ex.: condição acompanhada por profissional, necessidade alimentar específica..."></textarea>
+                    <small>Não é necessário preencher. Essa informação não será usada para diagnosticar ou prescrever dietas.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>04. Atividade física</h3>
+            <p>Você pratica exercícios físicos regularmente?</p>
+
+            <div class="radio-line">
+                <label class="radio-option">
+                    <input type="radio" name="exerciseRoutine" value="yes" required>
+                    Sim, pratico exercícios
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="exerciseRoutine" value="no" required>
+                    Não pratico regularmente
+                </label>
+            </div>
+            <p style="margin-top:12px;margin-bottom:0">
+                Quando a opção for sim, o painel terá um espaço para registrar
+                se você treinou em cada dia, além do tipo e da duração da atividade.
+            </p>
+        </div>
+
+        <div class="disclaimer" style="margin-top:22px">
+            <strong>Importante:</strong> as informações desta ficha servem
+            para personalizar a experiência e oferecer orientações gerais.
+            Não substituem avaliação nutricional, diagnóstico ou tratamento.
+            Procure um profissional para definir um plano alimentar individualizado.
+        </div>
+
+        <button type="submit" class="primary">Salvar ficha e começar →</button>
+    </form>
+</section>
+
+<!-- PAINEL PRINCIPAL -->
+
+<section id="dashboard" hidden>
+
+    <div class="date-heading">
+        <div>
+            <h2>Meu diário alimentar</h2>
+            <p id="selectedDateSubtitle"></p>
+        </div>
+        <input type="date" class="date-picker" id="datePicker" aria-label="Selecionar data">
+    </div>
+
+    <div class="stats-grid">
+        <div class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Calorias consumidas</span>
+                <div class="stat-icon">🍽️</div>
+            </div>
+            <span class="stat-value" id="consumedCalories">0</span>
+            <span class="stat-unit">kcal</span>
+            <p class="stat-description">Total registrado no dia selecionado.</p>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Gasto diário estimado</span>
+                <div class="stat-icon">🔥</div>
+            </div>
+            <span class="stat-value" id="dailyCalories">0</span>
+            <span class="stat-unit">kcal</span>
+            <p class="stat-description">Estimativa de manutenção energética.</p>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Diferença energética</span>
+                <div class="stat-icon">⚖️</div>
+            </div>
+            <span class="stat-value" id="balanceCalories">0</span>
+            <span class="stat-unit">kcal</span>
+            <p class="stat-description" id="balanceDescription">Gasto estimado menos consumo.</p>
+        </div>
+    </div>
+
+    <div class="card progress-card">
+        <div class="progress-heading">
+            <strong>Progresso diário</strong>
+            <span id="progressPercentage">0% da estimativa</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-footer">
+            <span id="progressConsumed">0 kcal consumidas</span>
+            <span id="progressGoal">Estimativa: 0 kcal</span>
+        </div>
+    </div>
+
+    <div class="content-grid">
+
+        <div class="main-column">
+
+            <!-- CALENDÁRIO -->
+
+            <section class="card section-card">
+                <div class="section-title">
+                    <div>
+                        <h3>📅 Histórico alimentar</h3>
+                        <p>Selecione qualquer data para consultar ou registrar refeições.</p>
+                    </div>
+                    <div class="calendar-navigation">
+                        <button type="button" id="previousMonth" aria-label="Mês anterior">‹</button>
+                        <strong id="calendarMonth">Mês</strong>
+                        <button type="button" id="nextMonth" aria-label="Próximo mês">›</button>
+                    </div>
+                </div>
+
+                <div class="calendar-weekdays">
+                    <span>Dom</span><span>Seg</span><span>Ter</span>
+                    <span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                </div>
+                <div class="calendar-days" id="calendarDays"></div>
+                <div class="calendar-legend">
+                    <span><i class="legend-dot"></i>Dia com registro alimentar</span>
+                    <span>Verde-claro: data selecionada</span>
+                </div>
+            </section>
+
+            <!-- REFEIÇÕES -->
+
+            <section class="card section-card">
+                <div class="section-title">
+                    <div>
+                        <h3>🍴 Minhas refeições</h3>
+                        <p>Escreva o que comeu, informe a quantidade e registre as calorias.</p>
+                    </div>
+                </div>
+                <div id="mealsContainer"></div>
+            </section>
+
+            <!-- ATIVIDADE FÍSICA -->
+
+            <section class="card section-card" id="exerciseSection" hidden>
+                <div class="section-title">
+                    <div>
+                        <h3>🏃 Atividade física do dia</h3>
+                        <p>Marque se treinou na data selecionada.</p>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <label class="exercise-toggle">
+                        <input type="checkbox" id="exerciseDone">
+                        Fiz atividade física neste dia
+                    </label>
+
+                    <div class="exercise-details" id="exerciseDetails" hidden>
+                        <div class="form-grid">
+                            <div class="field">
+                                <label for="exerciseType">Tipo de atividade</label>
+                                <select id="exerciseType">
+                                    <option value="Musculação">Musculação</option>
+                                    <option value="Caminhada">Caminhada</option>
+                                    <option value="Corrida">Corrida</option>
+                                    <option value="Ciclismo">Ciclismo</option>
+                                    <option value="Natação">Natação</option>
+                                    <option value="Futebol">Futebol</option>
+                                    <option value="Esporte coletivo">Esporte coletivo</option>
+                                    <option value="Dança">Dança</option>
+                                    <option value="Pilates">Pilates</option>
+                                    <option value="Yoga">Yoga</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="exerciseMinutes">Duração (minutos)</label>
+                                <input type="number" id="exerciseMinutes" min="1" max="1440" placeholder="Ex.: 60">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-summary" id="exerciseSummary">
+                        Ainda não há atividade física registrada nesta data.
+                    </div>
+
+                    <button type="button" class="primary" id="saveExercise">
+                        Salvar atividade do dia
+                    </button>
+                </div>
+
+                <p class="field" style="font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px">
+                    O exercício é registrado separadamente. Não somamos automaticamente
+                    calorias de treino ao gasto diário estimado, pois o nível habitual
+                    de atividade já participa desse cálculo e a soma poderia duplicar estimativas.
+                </p>
+            </section>
+
+        </div>
+
+        <aside class="side-column">
+
+            <!-- PERFIL -->
+
+            <section class="card section-card">
+                <div class="section-title">
+                    <div>
+                        <h3>👤 Minha ficha</h3>
+                        <p>Dados físicos e perfil alimentar.</p>
+                    </div>
+                </div>
+
+                <div class="profile-info">
+                    <div class="profile-item"><small>Idade</small><strong id="profileAge">—</strong></div>
+                    <div class="profile-item"><small>Sexo biológico</small><strong id="profileSex">—</strong></div>
+                    <div class="profile-item"><small>Peso</small><strong id="profileWeight">—</strong></div>
+                    <div class="profile-item"><small>Altura</small><strong id="profileHeight">—</strong></div>
+                    <div class="profile-item"><small>Atividade habitual</small><strong id="profileActivity">—</strong></div>
+                    <div class="profile-item"><small>Objetivo</small><strong id="profileGoal">—</strong></div>
+                </div>
+
+                <div class="metabolic-box">
+                    <small>Metabolismo basal estimado</small>
+                    <strong id="basalCalories">0 kcal</strong>
+                    <p>Energia estimada utilizada pelo organismo em repouso, pela fórmula de Mifflin-St Jeor.</p>
+                </div>
+
+                <details class="details">
+                    <summary>Editar minha ficha</summary>
+                    <form id="editForm" class="edit-form">
+                        <div class="form-grid">
+                            <div class="field"><label for="editAge">Idade</label><input id="editAge" name="age" type="number" min="1" max="120" required></div>
+                            <div class="field">
+                                <label for="editSex">Sexo biológico</label>
+                                <select id="editSex" name="sex"><option value="male">Masculino</option><option value="female">Feminino</option></select>
+                            </div>
+                            <div class="field"><label for="editWeight">Peso (kg)</label><input id="editWeight" name="weight" type="number" min="20" max="400" step=".1" required></div>
+                            <div class="field"><label for="editHeight">Altura (cm)</label><input id="editHeight" name="height" type="number" min="80" max="250" required></div>
+                            <div class="field full">
+                                <label for="editActivity">Atividade habitual</label>
+                                <select id="editActivity" name="activity">
+                                    <option value="1.2">Sedentário</option>
+                                    <option value="1.375">Pouco ativo</option>
+                                    <option value="1.55">Moderadamente ativo</option>
+                                    <option value="1.725">Muito ativo</option>
+                                    <option value="1.9">Extremamente ativo</option>
+                                </select>
+                            </div>
+                            <div class="field full">
+                                <label for="editGoal">Objetivo</label>
+                                <select id="editGoal" name="goal">
+                                    <option value="habits">Melhorar hábitos</option>
+                                    <option value="maintain">Manter peso</option>
+                                    <option value="reduce">Reduzir peso</option>
+                                    <option value="gain">Aumentar peso ou massa muscular</option>
+                                </select>
+                            </div>
+                            <div class="field full">
+                                <label for="editPattern">Padrão alimentar</label>
+                                <select id="editPattern" name="dietPattern">
+                                    <option value="omnivore">Onívoro</option>
+                                    <option value="vegetarian">Vegetariano</option>
+                                    <option value="vegan">Vegano</option>
+                                    <option value="pescatarian">Pescetariano</option>
+                                    <option value="other">Outro</option>
+                                </select>
+                            </div>
+                            <div class="field full">
+                                <label for="editExerciseRoutine">Pratica exercícios regularmente?</label>
+                                <select id="editExerciseRoutine" name="exerciseRoutine">
+                                    <option value="yes">Sim</option>
+                                    <option value="no">Não</option>
+                                </select>
+                            </div>
+                            <div class="field full">
+                                <label for="editRestrictions">Alergias e restrições</label>
+                                <textarea id="editRestrictions" name="restrictions" maxlength="600"></textarea>
+                            </div>
+                            <div class="field full">
+                                <label for="editConditions">Condições de saúde ou necessidades importantes</label>
+                                <textarea id="editConditions" name="conditions" maxlength="600"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="primary">Atualizar ficha</button>
+                    </form>
+                </details>
+            </section>
+
+            <!-- RESUMO -->
+
+            <section class="card section-card">
+                <div class="section-title">
+                    <div><h3>📊 Resumo do dia</h3><p>Distribuição das calorias por refeição.</p></div>
+                </div>
+                <div id="dailyBreakdown"></div>
+            </section>
+
+            <!-- SUGESTÕES -->
+
+            <section class="card section-card">
+                <div class="section-title">
+                    <div><h3>🥑 Sugestões alimentares</h3><p>Orientações gerais conforme sua ficha.</p></div>
+                </div>
+                <div id="recommendations"></div>
+            </section>
+
+            <div class="notice">
+                <strong>ⓘ Sobre os cálculos</strong>
+                Metabolismo e gasto energético são estimativas, não medições.
+                Os valores nutricionais também podem ser aproximados. As sugestões
+                não representam prescrição médica ou nutricional.
+            </div>
+
+        </aside>
+    </div>
+</section>
+</main>
+
+<footer class="footer">
+    Meu Diário Alimentar · Seus registros ficam armazenados neste navegador.
+</footer>
+
+<!-- MODAL DE ALIMENTOS -->
+
+<div class="modal-overlay" id="foodModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-header">
+            <h3 id="modalTitle">Adicionar alimento</h3>
+            <button type="button" class="modal-close" id="closeModal" aria-label="Fechar">×</button>
+        </div>
+
+        <p class="modal-description" id="modalMealDescription"></p>
+
+        <form id="foodForm" class="modal-form">
+
+            <div class="field">
+                <label for="quickFood">Atalhos da base de alimentos (opcional)</label>
+                <select id="quickFood">
+                    <option value="">Escolher alimento da lista ou digitar abaixo</option>
+                </select>
+                <small>Não encontrou seu alimento? Escreva o nome no campo seguinte.</small>
+            </div>
+
+            <div class="field">
+                <label for="foodName">O que você comeu?</label>
+                <input id="foodName" type="text" maxlength="90" required placeholder="Ex.: pão com queijo e tomate">
+            </div>
+
+            <div class="field">
+                <label for="foodCalories">Calorias por 100 g ou 100 ml</label>
+                <input id="foodCalories" type="number" min="0" max="1000" step=".1" required placeholder="Ex.: 150">
+                <small>
+                    Para alimentos fora da base, consulte a embalagem ou uma tabela
+                    nutricional confiável. O aplicativo não inventa esse valor.
+                </small>
+            </div>
+
+            <div class="field">
+                <label for="foodSource">Origem do valor calórico</label>
+                <select id="foodSource">
+                    <option value="base">Estimativa da base do aplicativo</option>
+                    <option value="label">Rótulo ou tabela nutricional consultada</option>
+                    <option value="personal">Estimativa informada pelo usuário</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Quantidade consumida</label>
+                <div class="quantity-row">
+                    <input id="foodQuantity" type="number" min=".01" step=".01" required placeholder="Ex.: 200">
+                    <select id="foodUnit" aria-label="Unidade">
+                        <option value="g">Gramas (g)</option>
+                        <option value="ml">Mililitros (ml)</option>
+                    </select>
+                </div>
+                <small>Obrigatório. As calorias serão proporcionais à quantidade informada.</small>
+            </div>
+
+            <label class="check-line">
+                <input type="checkbox" id="saveFood" checked>
+                Salvar este alimento na minha lista pessoal para usar novamente.
+            </label>
+
+            <div class="food-info" id="foodCalculation">
+                Preencha o alimento, as calorias de referência e a quantidade para visualizar o cálculo.
+            </div>
+
+            <button type="submit" class="primary">Adicionar à refeição</button>
+        </form>
+
+        <p class="modal-disclaimer">
+            Exemplo: um alimento com 150 kcal por 100 g terá 300 kcal em uma porção
+            de 200 g. Para misturas ou receitas, utilize um valor por 100 g da
+            preparação pronta, calculado a partir dos ingredientes, ou uma fonte consultada.
+        </p>
+    </div>
+</div>
+
+<script>
+"use strict";
+
+/* =====================================================
+   CONFIGURAÇÕES E BASE DE ALIMENTOS
+===================================================== */
+
+const STORAGE_KEY = "meuDiarioAlimentar_v1";
+
+const MEALS = [
+    {id:"breakfast",name:"Café da manhã",icon:"🌅",description:"Primeira refeição do dia"},
+    {id:"morningSnack",name:"Lanche da manhã",icon:"🍎",description:"Pequena refeição"},
+    {id:"lunch",name:"Almoço",icon:"🍛",description:"Refeição principal"},
+    {id:"afternoonSnack",name:"Lanche da tarde",icon:"🥪",description:"Refeição intermediária"},
+    {id:"dinner",name:"Jantar",icon:"🌙",description:"Última refeição principal"}
+];
+
+/* Valores aproximados por 100 g ou 100 ml. */
+const BASE_FOODS = [
+    {id:"rice",name:"Arroz branco cozido",kcal:128,unit:"g"},
+    {id:"brownRice",name:"Arroz integral cozido",kcal:124,unit:"g"},
+    {id:"beans",name:"Feijão carioca cozido",kcal:76,unit:"g"},
+    {id:"blackBeans",name:"Feijão preto cozido",kcal:77,unit:"g"},
+    {id:"chicken",name:"Peito de frango grelhado",kcal:159,unit:"g"},
+    {id:"beef",name:"Carne bovina magra grelhada",kcal:219,unit:"g"},
+    {id:"groundBeef",name:"Carne moída refogada",kcal:212,unit:"g"},
+    {id:"egg",name:"Ovo cozido",kcal:146,unit:"g"},
+    {id:"bread",name:"Pão francês",kcal:300,unit:"g"},
+    {id:"wholeBread",name:"Pão integral",kcal:253,unit:"g"},
+    {id:"banana",name:"Banana",kcal:89,unit:"g"},
+    {id:"apple",name:"Maçã",kcal:52,unit:"g"},
+    {id:"orange",name:"Laranja",kcal:47,unit:"g"},
+    {id:"avocado",name:"Abacate",kcal:160,unit:"g"},
+    {id:"oats",name:"Aveia em flocos",kcal:389,unit:"g"},
+    {id:"milk",name:"Leite integral",kcal:61,unit:"ml"},
+    {id:"skimMilk",name:"Leite desnatado",kcal:35,unit:"ml"},
+    {id:"yogurt",name:"Iogurte natural integral",kcal:63,unit:"g"},
+    {id:"mozzarella",name:"Queijo muçarela",kcal:300,unit:"g"},
+    {id:"potato",name:"Batata inglesa cozida",kcal:52,unit:"g"},
+    {id:"sweetPotato",name:"Batata-doce cozida",kcal:77,unit:"g"},
+    {id:"pasta",name:"Macarrão cozido",kcal:157,unit:"g"},
+    {id:"lettuce",name:"Alface",kcal:15,unit:"g"},
+    {id:"tomato",name:"Tomate",kcal:18,unit:"g"},
+    {id:"carrot",name:"Cenoura crua",kcal:41,unit:"g"},
+    {id:"broccoli",name:"Brócolis cozido",kcal:35,unit:"g"},
+    {id:"fish",name:"Peixe grelhado",kcal:128,unit:"g"},
+    {id:"salmon",name:"Salmão",kcal:206,unit:"g"},
+    {id:"nuts",name:"Castanha-do-pará",kcal:659,unit:"g"},
+    {id:"chocolate",name:"Chocolate ao leite",kcal:535,unit:"g"},
+    {id:"tapioca",name:"Goma de tapioca hidratada",kcal:230,unit:"g"},
+    {id:"butter",name:"Manteiga",kcal:717,unit:"g"},
+    {id:"honey",name:"Mel",kcal:304,unit:"g"},
+    {id:"creamCheese",name:"Requeijão cremoso",kcal:257,unit:"g"},
+    {id:"granola",name:"Granola",kcal:471,unit:"g"},
+    {id:"peanutButter",name:"Pasta de amendoim",kcal:588,unit:"g"},
+    {id:"orangeJuice",name:"Suco de laranja natural",kcal:45,unit:"ml"},
+    {id:"coffee",name:"Café sem açúcar",kcal:2,unit:"ml"},
+    {id:"water",name:"Água",kcal:0,unit:"ml"}
+];
+
+const ACTIVITY_LABELS = {
+    "1.2":"Sedentário",
+    "1.375":"Pouco ativo",
+    "1.55":"Moderadamente ativo",
+    "1.725":"Muito ativo",
+    "1.9":"Extremamente ativo"
+};
+
+const GOAL_LABELS = {
+    habits:"Melhorar hábitos",
+    maintain:"Manter peso",
+    reduce:"Reduzir peso",
+    gain:"Aumentar peso ou massa muscular"
+};
+
+/* =====================================================
+   ARMAZENAMENTO E COMPATIBILIDADE
+===================================================== */
+
+function todayKey(date=new Date()){
+    const y=date.getFullYear();
+    const m=String(date.getMonth()+1).padStart(2,"0");
+    const d=String(date.getDate()).padStart(2,"0");
+    return `${y}-${m}-${d}`;
+}
+
+function loadDB(){
+    const initial={
+        profile:null,
+        days:{},
+        customFoods:[],
+        selectedDate:todayKey()
+    };
+
+    try{
+        const raw=localStorage.getItem(STORAGE_KEY);
+        if(!raw)return initial;
+
+        const data=JSON.parse(raw);
+        const db={
+            ...initial,
+            ...data,
+            days:data.days||{},
+            customFoods:Array.isArray(data.customFoods)?data.customFoods:[]
+        };
+
+        if(db.profile){
+            db.profile={
+                ...db.profile,
+                goal:db.profile.goal||"habits",
+                dietPattern:db.profile.dietPattern||"omnivore",
+                exerciseRoutine:db.profile.exerciseRoutine||false,
+                restrictions:db.profile.restrictions||"",
+                conditions:db.profile.conditions||""
+            };
+        }
+
+        db.customFoods=db.customFoods.map(food=>({
+            ...food,
+            kcalPer100:Number(food.kcalPer100??food.kcal??0),
+            unit:food.unit==="ml"?"ml":"g",
+            source:food.source||"Personalizado"
+        }));
+
+        return db;
+    }catch(error){
+        console.error("Erro ao carregar os dados:",error);
+        return initial;
+    }
+}
+
+let db=loadDB();
+
+function saveDB(){
+    try{
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(db));
+    }catch(error){
+        alert("Não foi possível salvar os dados. Verifique o armazenamento do navegador.");
+        console.error(error);
+    }
+}
+
+let selectedDate=db.selectedDate||todayKey();
+let calendarDate=parseDate(selectedDate);
+let currentMeal=null;
+
+/* =====================================================
+   FUNÇÕES GERAIS
+===================================================== */
+
+function escapeHTML(value){
+    return String(value).replace(/[&<>"']/g,c=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    })[c]);
+}
+
+function numberBR(value){
+    return Math.round(Number(value)||0).toLocaleString("pt-BR");
+}
+
+function decimalBR(value){
+    return Number(value||0).toLocaleString("pt-BR",{
+        maximumFractionDigits:1
+    });
+}
+
+function parseDate(key){
+    const parts=String(key).split("-").map(Number);
+    return new Date(parts[0],parts[1]-1,parts[2],12,0,0);
+}
+
+function validDateKey(key){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(key))return false;
+    return todayKey(parseDate(key))===key;
+}
+
+function getDay(key){
+    return db.days[key]||{meals:{},exercise:null};
+}
+
+function getItems(key,mealId){
+    const day=getDay(key);
+    const arr=day.meals?.[mealId];
+    return Array.isArray(arr)?arr:[];
+}
+
+function mealTotal(key,mealId){
+    return getItems(key,mealId).reduce((sum,item)=>
+        sum+Number(item.calories||0),0);
+}
+
+function dayTotal(key){
+    return MEALS.reduce((sum,meal)=>sum+mealTotal(key,meal.id),0);
+}
+
+function hasRecords(key){
+    return MEALS.some(meal=>getItems(key,meal.id).length>0);
+}
+
+function createId(){
+    return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
+}
+
+function allFoods(){
+    return [
+        ...BASE_FOODS.map(food=>({...food,source:"Estimativa da base"})),
+        ...db.customFoods
+    ];
+}
+
+function findFood(id){
+    return allFoods().find(food=>food.id===id);
+}
+
+/* =====================================================
+   CÁLCULO ENERGÉTICO
+===================================================== */
+
+function energy(profile){
+    if(!profile)return{bmr:0,tdee:0};
+
+    const adjustment=profile.sex==="male"?5:-161;
+    const bmr=
+        10*Number(profile.weight)+
+        6.25*Number(profile.height)-
+        5*Number(profile.age)+
+        adjustment;
+
+    return{
+        bmr:Math.max(0,bmr),
+        tdee:Math.max(0,bmr*Number(profile.activity))
+    };
+}
+
+/* =====================================================
+   ELEMENTOS DA PÁGINA
+===================================================== */
+
+const setupPanel=document.getElementById("setupPanel");
+const dashboard=document.getElementById("dashboard");
+const calendarDays=document.getElementById("calendarDays");
+const calendarMonth=document.getElementById("calendarMonth");
+const mealsContainer=document.getElementById("mealsContainer");
+const foodModal=document.getElementById("foodModal");
+const quickFood=document.getElementById("quickFood");
+
+/* =====================================================
+   FICHA INICIAL
+===================================================== */
+
+function readForm(form){
+    const data=new FormData(form);
+    return{
+        age:Number(data.get("age")),
+        sex:data.get("sex"),
+        weight:Number(data.get("weight")),
+        height:Number(data.get("height")),
+        activity:Number(data.get("activity")),
+        goal:data.get("goal"),
+        dietPattern:data.get("dietPattern"),
+        exerciseRoutine:data.get("exerciseRoutine")==="yes",
+        restrictions:String(data.get("restrictions")||"").trim(),
+        conditions:String(data.get("conditions")||"").trim()
+    };
+}
+
+function validateProfile(p){
+    if(!Number.isFinite(p.age)||p.age<1||p.age>120){
+        alert("Informe uma idade válida.");return false;
+    }
+    if(!Number.isFinite(p.weight)||p.weight<20||p.weight>400){
+        alert("Informe um peso válido entre 20 e 400 kg.");return false;
+    }
+    if(!Number.isFinite(p.height)||p.height<80||p.height>250){
+        alert("Informe uma altura válida entre 80 e 250 cm.");return false;
+    }
+    if(!["male","female"].includes(p.sex)){
+        alert("Selecione o sexo biológico.");return false;
+    }
+    if(![1.2,1.375,1.55,1.725,1.9].includes(p.activity)){
+        alert("Selecione um nível de atividade válido.");return false;
+    }
+    if(!["habits","maintain","reduce","gain"].includes(p.goal)){
+        alert("Selecione um objetivo.");return false;
+    }
+    if(!["omnivore","vegetarian","vegan","pescatarian","other"].includes(p.dietPattern)){
+        alert("Selecione seu padrão alimentar.");return false;
+    }
+    return true;
+}
+
+document.getElementById("setupForm").addEventListener("submit",event=>{
+    event.preventDefault();
+    const profile=readForm(event.currentTarget);
+    if(!validateProfile(profile))return;
+    db.profile=profile;
+    saveDB();
+    renderApp();
+});
+
+document.getElementById("editForm").addEventListener("submit",event=>{
+    event.preventDefault();
+    const p=readForm(event.currentTarget);
+    if(!validateProfile(p))return;
+
+    db.profile=p;
+    saveDB();
+    renderApp();
+
+    document.querySelector(".details").open=false;
+    alert("Sua ficha foi atualizada.");
+});
+
+/* =====================================================
+   PERFIL
+===================================================== */
+
+function renderProfile(){
+    const p=db.profile;
+    const e=energy(p);
+
+    document.getElementById("profileAge").textContent=p.age+" anos";
+    document.getElementById("profileSex").textContent=p.sex==="male"?"Masculino":"Feminino";
+    document.getElementById("profileWeight").textContent=decimalBR(p.weight)+" kg";
+    document.getElementById("profileHeight").textContent=numberBR(p.height)+" cm";
+    document.getElementById("profileActivity").textContent=ACTIVITY_LABELS[String(p.activity)];
+    document.getElementById("profileGoal").textContent=GOAL_LABELS[p.goal];
+    document.getElementById("basalCalories").textContent=numberBR(e.bmr)+" kcal";
+
+    const values={
+        editAge:p.age,
+        editSex:p.sex,
+        editWeight:p.weight,
+        editHeight:p.height,
+        editActivity:String(p.activity),
+        editGoal:p.goal,
+        editPattern:p.dietPattern,
+        editExerciseRoutine:p.exerciseRoutine?"yes":"no",
+        editRestrictions:p.restrictions,
+        editConditions:p.conditions
+    };
+
+    Object.entries(values).forEach(([id,value])=>{
+        const el=document.getElementById(id);
+        if(el)el.value=value;
+    });
+}
+
+/* =====================================================
+   PAINEL DIÁRIO
+===================================================== */
+
+function renderDashboard(){
+    const total=dayTotal(selectedDate);
+    const e=energy(db.profile);
+    const balance=e.tdee-total;
+
+    document.getElementById("consumedCalories").textContent=numberBR(total);
+    document.getElementById("dailyCalories").textContent=numberBR(e.tdee);
+
+    document.getElementById("balanceCalories").textContent=
+        (balance<0?"−":balance>0?"+":"")+numberBR(Math.abs(balance));
+
+    document.getElementById("balanceDescription").textContent=
+        balance>0?"Consumo abaixo do gasto estimado.":
+        balance<0?"Consumo acima do gasto estimado.":
+        "Consumo igual ao gasto estimado.";
+
+    const percent=e.tdee>0?total/e.tdee*100:0;
+    document.getElementById("progressPercentage").textContent=
+        decimalBR(percent)+"% da estimativa";
+
+    document.getElementById("progressFill").style.width=
+        Math.min(100,Math.max(0,percent))+"%";
+
+    document.getElementById("progressConsumed").textContent=
+        numberBR(total)+" kcal consumidas";
+
+    document.getElementById("progressGoal").textContent=
+        "Estimativa: "+numberBR(e.tdee)+" kcal";
+
+    const date=parseDate(selectedDate);
+
+    document.getElementById("selectedDateSubtitle").textContent=
+        date.toLocaleDateString("pt-BR",{
+            weekday:"long",day:"numeric",month:"long",year:"numeric"
+        });
+
+    document.getElementById("datePicker").value=selectedDate;
+}
+
+/* =====================================================
+   CALENDÁRIO GREGORIANO
+===================================================== */
+
+function renderCalendar(){
+    const year=calendarDate.getFullYear();
+    const month=calendarDate.getMonth();
+    const firstDay=new Date(year,month,1).getDay();
+    const daysInMonth=new Date(year,month+1,0).getDate();
+    const cells=Math.ceil((firstDay+daysInMonth)/7)*7;
+
+    calendarMonth.textContent=new Date(year,month,1).toLocaleDateString(
+        "pt-BR",{month:"long",year:"numeric"}
+    );
+
+    let html="";
+
+    for(let i=0;i<cells;i++){
+        const day=i-firstDay+1;
+
+        if(day<1||day>daysInMonth){
+            html+='<div class="calendar-day empty"></div>';
+            continue;
+        }
+
+        const key=year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0");
+        const selected=key===selectedDate;
+        const today=key===todayKey();
+        const has=hasRecords(key);
+        const classes=["calendar-day",selected?"selected":"",today?"today":""].filter(Boolean).join(" ");
+
+        html+=`
+            <button class="${classes}" type="button" data-date="${key}"
+                aria-label="${day}, ${numberBR(dayTotal(key))} kcal">
+                <span class="day-number">${day}</span>
+                <span class="day-total">${has?numberBR(dayTotal(key))+" kcal":""}</span>
+            </button>`;
+    }
+
+    calendarDays.innerHTML=html;
+}
+
+function selectDate(key){
+    if(!validDateKey(key))return;
+
+    selectedDate=key;
+    calendarDate=parseDate(key);
+    db.selectedDate=key;
+    saveDB();
+
+    renderDashboard();
+    renderCalendar();
+    renderMeals();
+    renderBreakdown();
+    renderExercise();
+}
+
+calendarDays.addEventListener("click",event=>{
+    const button=event.target.closest("[data-date]");
+    if(button)selectDate(button.dataset.date);
+});
+
+function changeMonth(direction){
+    const day=parseDate(selectedDate).getDate();
+    const y=calendarDate.getFullYear();
+    const m=calendarDate.getMonth()+direction;
+    const last=new Date(y,m+1,0).getDate();
+    const next=new Date(y,m,Math.min(day,last));
+    selectDate(todayKey(next));
+}
+
+document.getElementById("previousMonth").addEventListener("click",()=>changeMonth(-1));
+document.getElementById("nextMonth").addEventListener("click",()=>changeMonth(1));
+
+document.getElementById("datePicker").addEventListener("change",event=>{
+    if(event.target.value)selectDate(event.target.value);
+});
+
+/* =====================================================
+   REFEIÇÕES
+===================================================== */
+
+function renderMeals(){
+    let html="";
+
+    MEALS.forEach(meal=>{
+        const items=getItems(selectedDate,meal.id);
+        const total=mealTotal(selectedDate,meal.id);
+
+        html+=`
+        <div class="meal-card">
+            <div class="meal-header">
+                <div class="meal-name">
+                    <div class="meal-icon">${meal.icon}</div>
+                    <div>
+                        <strong>${meal.name}</strong>
+                        <small>${meal.description}</small>
+                    </div>
+                </div>
+                <span class="meal-calories">${numberBR(total)} kcal</span>
+            </div>
+            <div class="meal-items">`;
+
+        if(items.length===0){
+            html+=`<div class="meal-empty">Nenhum alimento registrado nesta refeição.</div>`;
+        }else{
+            items.forEach(item=>{
+                html+=`
+                <div class="meal-item">
+                    <div class="item-info">
+                        <strong>${escapeHTML(item.name)}</strong>
+                        <small>
+                            ${decimalBR(item.quantity)} ${escapeHTML(item.unit)}
+                            · ${numberBR(item.calories)} kcal
+                            · ${escapeHTML(item.source)}
+                        </small>
+                    </div>
+                    <div class="item-right">
+                        <span class="item-kcal">${numberBR(item.calories)} kcal</span>
+                        <button type="button" class="delete"
+                            data-delete-meal="${meal.id}"
+                            data-delete-item="${escapeHTML(item.id)}"
+                            aria-label="Excluir alimento">×</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        html+=`
+            </div>
+            <div class="meal-footer">
+                <span>${items.length} alimento(s) registrado(s)</span>
+                <button class="add-food" type="button" data-add-meal="${meal.id}">
+                    + Adicionar alimento
+                </button>
+            </div>
+        </div>`;
+    });
+
+    mealsContainer.innerHTML=html;
+}
+
+mealsContainer.addEventListener("click",event=>{
+    const add=event.target.closest("[data-add-meal]");
+    if(add){
+        openFoodModal(add.dataset.addMeal);
+        return;
+    }
+
+    const del=event.target.closest("[data-delete-item]");
+    if(del)deleteFood(del.dataset.deleteMeal,del.dataset.deleteItem);
+});
+
+function deleteFood(mealId,itemId){
+    const confirmed=confirm("Deseja excluir este alimento?");
+    if(!confirmed)return;
+
+    const day=db.days[selectedDate];
+    if(!day?.meals?.[mealId])return;
+
+    day.meals[mealId]=day.meals[mealId].filter(item=>item.id!==itemId);
+    saveDB();
+
+    renderDashboard();
+    renderCalendar();
+    renderMeals();
+    renderBreakdown();
+}
+
+/* =====================================================
+   RESUMO POR REFEIÇÃO
+===================================================== */
+
+function renderBreakdown(){
+    const total=dayTotal(selectedDate);
+    const box=document.getElementById("dailyBreakdown");
+
+    if(total===0){
+        box.innerHTML='<p class="breakdown-empty">Nenhum alimento registrado nesta data.</p>';
+        return;
+    }
+
+    box.innerHTML=MEALS.map(meal=>{
+        const amount=mealTotal(selectedDate,meal.id);
+        const percent=amount/total*100;
+
+        return`
+        <div class="breakdown-row">
+            <div class="breakdown-heading">
+                <span>${meal.icon} ${meal.name}</span>
+                <span>${numberBR(amount)} kcal · ${decimalBR(percent)}%</span>
+            </div>
+            <div class="breakdown-track">
+                <div class="breakdown-fill" style="width:${percent}%"></div>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+/* =====================================================
+   REGISTRO DIÁRIO DE EXERCÍCIO
+===================================================== */
+
+const exerciseDone=document.getElementById("exerciseDone");
+const exerciseDetails=document.getElementById("exerciseDetails");
+
+function renderExercise(){
+    const visible=Boolean(db.profile?.exerciseRoutine);
+    document.getElementById("exerciseSection").hidden=!visible;
+
+    if(!visible)return;
+
+    const day=getDay(selectedDate);
+    const exercise=day.exercise||null;
+    const done=Boolean(exercise?.done);
+
+    exerciseDone.checked=done;
+    exerciseDetails.hidden=!done;
+
+    if(exercise){
+        document.getElementById("exerciseType").value=exercise.type||"Musculação";
+        document.getElementById("exerciseMinutes").value=exercise.minutes||"";
+    }else{
+        document.getElementById("exerciseMinutes").value="";
+    }
+
+    document.getElementById("exerciseSummary").textContent=
+        done
+        ?`✓ ${exercise.type} registrado(a) por ${exercise.minutes} minutos neste dia.`
+        :"Ainda não há atividade física registrada nesta data.";
+}
+
+exerciseDone.addEventListener("change",()=>{
+    exerciseDetails.hidden=!exerciseDone.checked;
+});
+
+document.getElementById("saveExercise").addEventListener("click",()=>{
+    const done=exerciseDone.checked;
+    let record={done:false,type:"",minutes:0};
+
+    if(done){
+        const type=document.getElementById("exerciseType").value;
+        const minutes=Number(document.getElementById("exerciseMinutes").value);
+
+        if(!Number.isFinite(minutes)||minutes<1||minutes>1440){
+            alert("Informe uma duração válida, em minutos.");
+            return;
+        }
+
+        record={done:true,type,minutes};
+    }
+
+    if(!db.days[selectedDate])db.days[selectedDate]={meals:{}};
+    db.days[selectedDate].exercise=record;
+    saveDB();
+    renderExercise();
+});
+
+/* =====================================================
+   CADASTRO E ATALHOS DE ALIMENTOS
+===================================================== */
+
+function populateQuickFoods(){
+    const saved= db.customFoods;
+    let html='<option value="">Escolher alimento da lista ou digitar abaixo</option>';
+
+    html+='<optgroup label="Base do aplicativo">';
+    BASE_FOODS.forEach(food=>{
+        html+=`<option value="${escapeHTML(food.id)}">${escapeHTML(food.name)}</option>`;
+    });
+    html+='</optgroup>';
+
+    if(saved.length){
+        html+='<optgroup label="Minha lista pessoal">';
+        saved.forEach(food=>{
+            html+=`<option value="${escapeHTML(food.id)}">${escapeHTML(food.name)}</option>`;
+        });
+        html+='</optgroup>';
+    }
+
+    quickFood.innerHTML=html;
+}
+
+let selectedFoodSource="label";
+
+function openFoodModal(mealId){
+    const meal=MEALS.find(item=>item.id===mealId);
+    if(!meal)return;
+
+    currentMeal=mealId;
+    document.getElementById("modalTitle").textContent="Adicionar alimento";
+    document.getElementById("modalMealDescription").textContent=
+        "Registrando em: "+meal.name+". Escreva o alimento e informe a quantidade consumida.";
+
+    document.getElementById("foodForm").reset();
+    selectedFoodSource="label";
+    populateQuickFoods();
+    updateFoodCalculation();
+
+    foodModal.hidden=false;
+    setTimeout(()=>document.getElementById("foodName").focus(),50);
+}
+
+function closeModal(){
+    foodModal.hidden=true;
+    currentMeal=null;
+}
+
+document.getElementById("closeModal").addEventListener("click",closeModal);
+foodModal.addEventListener("click",event=>{
+    if(event.target===foodModal)closeModal();
+});
+document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"&&!foodModal.hidden)closeModal();
+});
+
+quickFood.addEventListener("change",()=>{
+    const food=findFood(quickFood.value);
+    if(!food)return;
+
+    document.getElementById("foodName").value=food.name;
+    document.getElementById("foodCalories").value=food.kcalPer100??food.kcal;
+    document.getElementById("foodUnit").value=food.unit;
+    document.getElementById("foodSource").value=
+        food.source==="Estimativa da base"?"base":
+        food.source==="Estimativa pessoal do usuário"?"personal":"label";
+
+    updateFoodCalculation();
+});
+
+["foodName","foodCalories","foodQuantity","foodUnit","foodSource"].forEach(id=>{
+    document.getElementById(id).addEventListener("input",updateFoodCalculation);
+    document.getElementById(id).addEventListener("change",updateFoodCalculation);
+});
+
+function updateFoodCalculation(){
+    const name=document.getElementById("foodName").value.trim();
+    const kcal=Number(document.getElementById("foodCalories").value);
+    const quantity=Number(document.getElementById("foodQuantity").value);
+    const unit=document.getElementById("foodUnit").value;
+    const box=document.getElementById("foodCalculation");
+
+    if(!name||document.getElementById("foodCalories").value===""||
+       document.getElementById("foodQuantity").value===""){
+        box.textContent="Preencha o alimento, as calorias de referência e a quantidade para visualizar o cálculo.";
+        return;
+    }
+
+    if(!Number.isFinite(kcal)||kcal<0||!Number.isFinite(quantity)||quantity<=0){
+        box.textContent="Confira os valores informados.";
+        return;
+    }
+
+    const result=quantity*kcal/100;
+    box.innerHTML=
+        `<strong>${escapeHTML(name)}</strong><br>`+
+        `${decimalBR(kcal)} kcal por 100 ${unit}<br>`+
+        `${decimalBR(quantity)} ${unit} = <strong>${decimalBR(result)} kcal</strong>`;
+}
+
+/* =====================================================
+   SALVAR ALIMENTO NA REFEIÇÃO
+===================================================== */
+
+document.getElementById("foodForm").addEventListener("submit",event=>{
+    event.preventDefault();
+    if(!currentMeal)return;
+
+    const name=document.getElementById("foodName").value.trim();
+    const kcalText=document.getElementById("foodCalories").value;
+    const kcal=Number(kcalText);
+    const quantity=Number(document.getElementById("foodQuantity").value);
+    const unit=document.getElementById("foodUnit").value;
+    const sourceType=document.getElementById("foodSource").value;
+
+    if(!name){
+        alert("Informe o nome do alimento.");
+        return;
+    }
+    if(kcalText===""||!Number.isFinite(kcal)||kcal<0||kcal>1000){
+        alert("Informe um valor calórico válido por 100 g ou 100 ml.");
+        return;
+    }
+    if(!Number.isFinite(quantity)||quantity<=0){
+        alert("A quantidade é obrigatória e deve ser maior que zero.");
+        return;
+    }
+
+    const calories=quantity*kcal/100;
+
+    const sourceLabels={
+        base:"Estimativa da base",
+        label:"Valor de rótulo/tabela informado",
+        personal:"Estimativa pessoal informada"
+    };
+    const source=sourceLabels[sourceType]||"Personalizado";
+
+    const record={
+        id:createId(),
+        name,
+        kcalPer100:kcal,
+        quantity,
+        unit,
+        calories:Number(calories.toFixed(2)),
+        source
+    };
+
+    if(!db.days[selectedDate])db.days[selectedDate]={meals:{}};
+    if(!db.days[selectedDate].meals)db.days[selectedDate].meals={};
+    if(!Array.isArray(db.days[selectedDate].meals[currentMeal])){
+        db.days[selectedDate].meals[currentMeal]=[];
+    }
+
+    db.days[selectedDate].meals[currentMeal].push(record);
+
+    if(document.getElementById("saveFood").checked){
+        const exists=db.customFoods.some(food=>
+            food.name.toLowerCase()===name.toLowerCase()&&
+            Number(food.kcalPer100)===kcal&&food.unit===unit
+        );
+
+        if(!exists){
+            db.customFoods.push({
+                id:createId(),
+                name,
+                kcalPer100:kcal,
+                unit,
+                source
+            });
+        }
+    }
+
+    saveDB();
+    closeModal();
+
+    renderDashboard();
+    renderCalendar();
+    renderMeals();
+    renderBreakdown();
+});
+
+/* =====================================================
+   RECOMENDAÇÕES ALIMENTARES GERAIS
+===================================================== */
+
+function getRecommendations(p){
+    const goalText={
+        habits:{
+            title:"Melhorar seus hábitos",
+            text:"Priorize regularidade, variedade e qualidade alimentar. Comece com pequenas mudanças que consiga manter na rotina.",
+            items:[
+                "Inclua frutas, verduras e legumes ao longo do dia.",
+                "Varie as fontes de proteínas e carboidratos.",
+                "Observe a fome e a saciedade, sem transformar cada refeição em uma cobrança."
+            ]
+        },
+        maintain:{
+            title:"Manutenção do peso",
+            text:"Uma rotina alimentar variada e consistente pode ajudar a sustentar seus hábitos. O equilíbrio depende também de sono, atividade física e contexto individual.",
+            items:[
+                "Mantenha variedade de alimentos e refeições.",
+                "Combine fontes de fibras, proteínas e carboidratos.",
+                "Acompanhe tendências ao longo do tempo, sem tirar conclusões de um único dia."
+            ]
+        },
+        reduce:{
+            title:"Objetivo de redução de peso",
+            text:"Evite dietas muito restritivas, jejuns sem orientação ou cortes radicais. Uma estratégia individualizada deve considerar sua saúde, rotina e necessidades nutricionais.",
+            items:[
+                "Priorize alimentos in natura ou minimamente processados.",
+                "Inclua fontes de fibras e proteínas nas refeições.",
+                "Converse com um nutricionista para definir uma estratégia segura e sustentável."
+            ]
+        },
+        gain:{
+            title:"Objetivo de aumento de peso ou massa muscular",
+            text:"O aumento de peso e de massa muscular depende de alimentação adequada, treinamento, recuperação e condições individuais.",
+            items:[
+                "Organize refeições variadas e suficientes para sua rotina.",
+                "Inclua fontes de proteína e carboidratos conforme suas necessidades.",
+                "Procure orientação profissional para ajustar quantidades e acompanhar a evolução."
+            ]
+        }
+    };
+
+    const patterns={
+        omnivore:{
+            title:"Seu padrão onívoro",
+            text:"Você pode variar entre fontes vegetais e animais. Exemplos gerais incluem feijão, lentilha, ovos, carnes, peixes, frutas, hortaliças e cereais."
+        },
+        vegetarian:{
+            title:"Seu padrão vegetariano",
+            text:"Considere variedade de leguminosas, como feijão, lentilha e grão-de-bico, além de tofu, sementes, castanhas e outros alimentos compatíveis com suas escolhas."
+        },
+        vegan:{
+            title:"Seu padrão vegano",
+            text:"Organize refeições com leguminosas, tofu, soja, grãos, sementes, castanhas, verduras e frutas. A adequação de nutrientes, especialmente vitamina B12, merece acompanhamento profissional."
+        },
+        pescatarian:{
+            title:"Seu padrão pescetariano",
+            text:"Você pode combinar peixes, leguminosas, cereais, frutas e hortaliças. Varie as fontes vegetais e evite depender de poucos alimentos."
+        },
+        other:{
+            title:"Seu padrão alimentar",
+            text:"Organize as refeições a partir dos alimentos que fazem parte da sua rotina, respeitando preferências, restrições e necessidades nutricionais."
+        }
+    };
+
+    const goal=goalText[p.goal]||goalText.habits;
+    const pattern=patterns[p.dietPattern]||patterns.other;
+
+    let html=`
+        <div class="recommendation">
+            <h4>${goal.title}</h4>
+            <p>${goal.text}</p>
+            <ul>${goal.items.map(item=>`<li>${item}</li>`).join("")}</ul>
+        </div>
+
+        <div class="recommendation">
+            <h4>${pattern.title}</h4>
+            <p>${pattern.text}</p>
+        </div>
+
+        <div class="recommendation">
+            <h4>Como montar uma refeição variada</h4>
+            <p>Uma referência educativa é combinar vegetais, uma fonte de proteína
+            e uma fonte de carboidratos, ajustando a composição às necessidades
+            e preferências pessoais. Não é uma prescrição de porções.</p>
+        </div>
+    `;
+
+    if(p.restrictions){
+        html+=`
+        <div class="recommendation recommendation-warning">
+            <h4>Suas restrições informadas</h4>
+            <p>${escapeHTML(p.restrictions)}</p>
+            <p style="margin-top:7px">
+                Confira ingredientes e possíveis contaminações cruzadas.
+                As sugestões gerais acima não verificam automaticamente cada restrição.
+                Em caso de alergia ou intolerância, siga as orientações do profissional
+                que acompanha você.
+            </p>
+        </div>`;
+    }
+
+    if(p.conditions){
+        html+=`
+        <div class="recommendation recommendation-warning">
+            <h4>Atenção às necessidades de saúde</h4>
+            <p>Você informou necessidades de saúde na ficha. As orientações deste
+            aplicativo são gerais e não foram adaptadas para tratar essa condição.
+            Não utilize estas sugestões como dieta terapêutica. Converse com
+            nutricionista ou profissional de saúde habilitado.</p>
+        </div>`;
+    }
+
+    html+=`
+    <div class="recommendation">
+        <h4>Pequenos hábitos que ajudam</h4>
+        <ul>
+            <li>Tenha água disponível ao longo do dia e respeite suas necessidades.</li>
+            <li>Varie os alimentos em vez de depender sempre das mesmas escolhas.</li>
+            <li>Observe sua rotina de sono, alimentação e atividade física.</li>
+            <li>Use o diário como ferramenta de observação, não como motivo de culpa.</li>
+        </ul>
+    </div>`;
+
+    return html;
+}
+
+function renderRecommendations(){
+    document.getElementById("recommendations").innerHTML=
+        getRecommendations(db.profile);
+}
+
+/* =====================================================
+   INICIALIZAÇÃO
+===================================================== */
+
+function renderApp(){
+    if(!db.profile){
+        setupPanel.hidden=false;
+        dashboard.hidden=true;
+        return;
+    }
+
+    setupPanel.hidden=true;
+    dashboard.hidden=false;
+
+    renderProfile();
+    renderDashboard();
+    renderCalendar();
+    renderMeals();
+    renderBreakdown();
+    renderExercise();
+    renderRecommendations();
+}
+
+renderApp();
+
+</script>
+</body>
+</html>
